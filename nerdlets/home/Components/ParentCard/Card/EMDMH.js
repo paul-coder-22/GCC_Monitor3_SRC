@@ -20,7 +20,7 @@ import Modalbox from "../../Modal/Modalbox";
 const EMDMH = ({
     cardName,
     timeUpdater,
-    guid,
+    infraQuery,
     metrics,
     headingColor,
     hyperlink,
@@ -321,15 +321,27 @@ const EMDMH = ({
                                                 {metricKey === "metric8" ? (
                                                     <>
                                                         <AlertTable isOpen={isModalOpen} handleClose={alertModalHandler} alertData={metricVal} timeSeries={timeUpdater} />
-                                                        <span style={{ cursor: "pointer", textDecoration: "underline"}} onClick={alertModalHandler}>
+                                                        <span style={{ cursor: "pointer", textDecoration: "underline" }} onClick={alertModalHandler}>
                                                             {(metricVal?.critical?.current !== 0 || metricVal?.warning?.current !== 0) ?
                                                                 (metricVal?.critical?.current + metricVal?.warning?.current).toFixed(0) : 'NA'}
                                                         </span>
                                                     </>
                                                 ) : metricKey === "metric1" ? (
-                                                    <span style={{ cursor: "pointer" }}>
-                                                        {metricVal?.current}
-                                                    </span>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        overlay={
+                                                            <Tooltip>
+                                                                <div>
+                                                                    {infraQuery}
+                                                                </div>
+                                                            </Tooltip>
+                                                        }
+                                                    >
+                                                        <span style={{ cursor: "pointer" }}>
+                                                            {metricVal?.current}
+                                                        </span>
+                                                    </OverlayTrigger>
+
                                                 ) : (
                                                     <OverlayTrigger
                                                         placement="top"

@@ -13,7 +13,7 @@ import appsList from "../../../app_data.json";
 
 const ParentCard = () => {
 
-    const [timeUpdater, setTimeUpdater] = useState('5 Minutes')
+    const [timeUpdater, setTimeUpdater] = useState('15 Minutes')
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredCardList_custom_state, setFilteredList_Custom] = useState()
     const [queryTimestamp, setQueryTimestamp] = useState(Date.now());
@@ -45,11 +45,12 @@ const ParentCard = () => {
         const statusOrder = { "DISRUPTED": 4, "DEGRADED": 3, "UNKNOWN": 2, "OPERATIONAL": 1 };
         const sorted = await Promise.all(Object.entries(filteredCardList_custom).map(async ([project, metrics]) => {
             const workloadQuery = metrics.metric9.query;
+            const infraQuery = metrics.metric1.query;
             const workload_account_Id = metrics.metric9.accountId;
             const workloadData = await fetch_NerdGraph_Query_Result(workloadQuery, workload_account_Id);
             const workloadValue = workloadData?.actor?.account?.nrql?.rawResponse?.results[0]?.latest ?? null;
             const workloadUrl = metrics.metric9.url;
-            return { project, metrics, workloadValue, workloadUrl };
+            return { project, metrics, workloadValue, workloadUrl, infraQuery };
         }));
 
         const sortedCards = sorted.sort((a, b) => {
@@ -126,7 +127,7 @@ const ParentCard = () => {
                                 key={e.project}
                                 cardName={e.project}
                                 timeUpdater={timeUpdater}
-                                guid={'Mjc4MTY2N3xOUjF8V09SS0xPQUR8MjE1MzQw'}
+                                infraQuery={e.infraQuery}
                                 metrics={e.metrics}
                                 headingColor={e.workloadValue}
                                 hyperlink={e.workloadUrl}
